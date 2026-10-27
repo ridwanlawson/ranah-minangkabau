@@ -4,6 +4,8 @@ import { buildRanahScene } from "./minang/scene.js";
 import { STR } from "./minang/dict.js";
 import "./minang/styles.css";
 
+const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 function Mark() {
   // Siluet gonjong rangkiang: 3 puncak runcing + songket merah — nuansa Minang
   return (
@@ -18,18 +20,24 @@ function Mark() {
 
 export function Scene() {
   const canvasRef = useRef(null);
-  const [loaderHost] = useState(() => document.getElementById("boot-loader-content"));
+  const [loaderHost] = useState(() =>
+    typeof document === "undefined" ? null : document.getElementById("boot-loader-content")
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [sceneLoading, setSceneLoading] = useState(true);
   const [sceneError, setSceneError] = useState(false);
   const [sceneProgress, setSceneProgress] = useState(null);
   const [routeStart, setRouteStart] = useState("bukittinggi");
-  const [lang, setLang] = useState(() => {
-    try { return localStorage.getItem("ranah-lang") || "id"; } catch { return "id"; }
-  });
+  const [lang, setLang] = useState("id");
   const t = (k, id) => (lang === "id" ? id : (STR[lang] && STR[lang][k]) || id);
   const pick = (l) => { setLang(l); try { localStorage.setItem("ranah-lang", l); } catch { /* abaikan */ } };
-  useLayoutEffect(() => {
+  useEffect(() => {
+    try {
+      const savedLanguage = localStorage.getItem("ranah-lang");
+      if (savedLanguage && STR[savedLanguage]) setLang(savedLanguage);
+    } catch { /* Storage is optional; the default language remains available. */ }
+  }, []);
+  useClientLayoutEffect(() => {
     document.getElementById("boot-loader-initial")?.remove();
   }, []);
 
@@ -180,7 +188,7 @@ export function Scene() {
                 ["c4b", "Rute", "c4p", "Contoh perjalanan tiga hari.", "#senja"],
               ].map(([bk, bd, pk, pd, href]) => (
                 <a className="chip" key={bk} href={href}>
-                  <span><b>{t(bk, bd)}</b><p>{t(pk, pd)}</p></span></a>
+                  <span><b>{t(bk, bd)}</b><span className="chip-desc">{t(pk, pd)}</span></span></a>
               ))}
             </div>
           </div>
