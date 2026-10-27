@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vercel/
+.taste-skill/
+
+.env*
+!.env.example
+
+/prompt.txt
+/jd74qzhd3a2269sme16x8c772s8ecsyg.glb
+/public/landing-pages/
