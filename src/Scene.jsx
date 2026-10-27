@@ -162,7 +162,7 @@ export function Scene() {
         <button className="nav-burger" aria-label={menuOpen ? "Tutup menu" : "Buka menu"} aria-expanded={menuOpen} aria-controls="primary-navigation" onClick={() => setMenuOpen(!menuOpen)}><i /><i /></button>
       </header>
 
-      <div className="page" id="top">
+      <div className="page" id="top" onClick={navigateToSection}>
         <section className="hero">
           <div className="hero-top" data-rv>
             <h1 className="display h-hero">
